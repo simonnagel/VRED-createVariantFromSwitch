@@ -11,7 +11,8 @@ Paste in your VRED Script Editor and Execute
 Execute the Sript
 
 Script creates a Variant for material Switches.
-createVariantFromMaterialSwitches(choice,override,preview,autoZoom)
+
+CHANGE SYNTAX IN LINE 93 TO ADJUST OPTIONS!
 createVariantFromMaterialSwitches(choice,override,preview,autoZoom)
 
 choice can be "all" or "selected" - either alle Material Switches or just the selected
