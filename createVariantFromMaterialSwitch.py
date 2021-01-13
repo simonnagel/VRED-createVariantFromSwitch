@@ -8,7 +8,17 @@ Accordingly, those configuration samples are provided “as is” with no warran
 Scripted by Simon Nagel
 How to use:
 Paste in your VRED Script Editor and Execute
-Execute the Variant with the ending *_blend to blend into that Variant Set
+Execute the Sript
+
+Script creates a Variant for material Switches.
+createVariantFromMaterialSwitches(choice,override,preview,autoZoom)
+createVariantFromMaterialSwitches(choice,override,preview,autoZoom)
+
+choice can be "all" or "selected" - either alle Material Switches or just the selected
+override can be "true" or "false" - overrides all existing Variants based on Material Switches
+preview can be "true" or "false" - generate Preview ImagePtr
+autozoom can be "true" or "false" - autoZooms to first Node with that Material to create Preview Image
+
 Scripted by Simon Nagel
 '''
 
@@ -79,8 +89,5 @@ def createVariantFromMaterialSwitches(choice,override,preview,autoZoom):
 
  
                                                
-#createVariantFromMaterialSwitches("all","true","true","true")
-createVariantFromMaterialSwitches("selected","false","true","false")
-
-print ("node")
-
+createVariantFromMaterialSwitches("all","true","true","true")
+#createVariantFromMaterialSwitches("selected","false","true","false")
