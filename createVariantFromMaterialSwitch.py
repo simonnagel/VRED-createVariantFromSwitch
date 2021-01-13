@@ -11,19 +11,6 @@ Paste in your VRED Script Editor and Execute
 Execute the Variant with the ending *_blend to blend into that Variant Set
 Scripted by Simon Nagel
 '''
-'''
-DISCLAIMER:
----------------------------------
-In any case, all binaries, configuration code, templates and snippets of this solution are of "work in progress" character.
-This also applies to GitHub "Release" versions.
-Neither Simon Nagel, nor Autodesk represents that these samples are reliable, accurate, complete, or otherwise valid. 
-Accordingly, those configuration samples are provided “as is” with no warranty of any kind and you use the applications at your own risk.
-Scripted by Simon Nagel
-How to use:
-Paste in your VRED Script Editor and Execute
-Execute the Variant with the ending *_blend to blend into that Variant Set
-Scripted by Simon Nagel
-'''
 
 def deleteVariantForMaterialSwitches():
     allVarSets = getGroupedVariantSets()
@@ -39,25 +26,22 @@ def deleteVariantForMaterialSwitches():
     print ("All VariantGroups starting with '___M_' were deleted")
     print ("All Variants starting with 'M_' were deleted")
 
-def variantRenderPreview(varSetName):
-    mats = getMaterialVariants(varSetName)
-    mat = findMaterial(mats[0])
-    nodes = mat.getNodes()  
-    selectNode(nodes[0])  
-    zoomTo(nodes[0])
-    setIsolateView(-1,nodes)
+def variantMaterialRenderPreview(varSetName,node,autoZoom):
+    if autoZoom == "true":
+        zoomTo(node)
     selectVariantSet(varSetName)
-    renderVariantSetPreview(varSetName)
-    resetIsolateView(-1)
+    renderVariantSetPreview(varSetName)      
     print("variantPreviewRendered"+varSetName)
 
-def createVariantFromMaterialSwitches(choice,override):       
+def createVariantFromMaterialSwitches(choice,override,preview,autoZoom):
+    camPos = findNode("Perspective").getTranslation()
+    camRot = findNode("Perspective").getRotation()     
     if choice == "all":    
         allMats = getAllMaterials()
     elif choice == "selected":
         allMats = getSelectedMaterials()
         
-    if override == "override":
+    if override == "true":
         deleteVariantForMaterialSwitches()    
     switchMats = []
     del switchMats[:]
@@ -69,7 +53,11 @@ def createVariantFromMaterialSwitches(choice,override):
             switchMats.append(tempMat)
                 
     for j in range(0,len(switchMats)):
+        
         switchMat = switchMats[j]
+        switchMatNodes = switchMat.getNodes() 
+        switchMatNode = switchMatNodes[0]
+        origSwitchMatChoice= switchMat.getChoice()
         switchMatName = switchMat.getName()    
         switchMatChildren = switchMat.getSubMaterials()
         switchMatChildrenName = switchMat.getName()    
@@ -79,13 +67,20 @@ def createVariantFromMaterialSwitches(choice,override):
         for i in range(0,numberChildren):
             child = switchMatChildren[i].getName()       
             varSetName = "M_"+child
+            deleteVariantSet(varSetName)
             varSet = createVariantSet(varSetName)       
             moveVariantSetToGroup(varSetName,"___M_"+switchMatName) 
             varSet.addMaterial(switchMat,child)
-            variantRenderPreview(varSetName)
+            if preview == "true":
+                variantMaterialRenderPreview(varSetName,switchMatNode,autoZoom)
+        switchMat.setChoice(origSwitchMatChoice)
+    findNode("Perspective").setTranslation(camPos[0],camPos[1],camPos[2])
+    findNode("Perspective").setRotation(camRot[0],camRot[1],camRot[2])   
 
  
                                                
-createVariantFromMaterialSwitches("all","override")
+#createVariantFromMaterialSwitches("all","true","true","true")
+createVariantFromMaterialSwitches("selected","false","true","false")
 
-#variantRenderPreview("M_Metallic black")
+print ("node")
+
