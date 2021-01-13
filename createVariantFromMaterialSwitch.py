@@ -11,6 +11,19 @@ Paste in your VRED Script Editor and Execute
 Execute the Variant with the ending *_blend to blend into that Variant Set
 Scripted by Simon Nagel
 '''
+'''
+DISCLAIMER:
+---------------------------------
+In any case, all binaries, configuration code, templates and snippets of this solution are of "work in progress" character.
+This also applies to GitHub "Release" versions.
+Neither Simon Nagel, nor Autodesk represents that these samples are reliable, accurate, complete, or otherwise valid. 
+Accordingly, those configuration samples are provided “as is” with no warranty of any kind and you use the applications at your own risk.
+Scripted by Simon Nagel
+How to use:
+Paste in your VRED Script Editor and Execute
+Execute the Variant with the ending *_blend to blend into that Variant Set
+Scripted by Simon Nagel
+'''
 
 def deleteVariantForMaterialSwitches():
     allVarSets = getGroupedVariantSets()
@@ -26,6 +39,17 @@ def deleteVariantForMaterialSwitches():
     print ("All VariantGroups starting with '___M_' were deleted")
     print ("All Variants starting with 'M_' were deleted")
 
+def variantRenderPreview(varSetName):
+    mats = getMaterialVariants(varSetName)
+    mat = findMaterial(mats[0])
+    nodes = mat.getNodes()  
+    selectNode(nodes[0])  
+    zoomTo(nodes[0])
+    setIsolateView(-1,nodes)
+    selectVariantSet(varSetName)
+    renderVariantSetPreview(varSetName)
+    resetIsolateView(-1)
+    print("variantPreviewRendered"+varSetName)
 
 def createVariantFromMaterialSwitches(choice,override):       
     if choice == "all":    
@@ -54,10 +78,14 @@ def createVariantFromMaterialSwitches(choice,override):
                
         for i in range(0,numberChildren):
             child = switchMatChildren[i].getName()       
-            varSet = createVariantSet("M_"+child)
-            moveVariantSetToGroup("M_"+child,"___M_"+switchMatName) 
+            varSetName = "M_"+child
+            varSet = createVariantSet(varSetName)       
+            moveVariantSetToGroup(varSetName,"___M_"+switchMatName) 
             varSet.addMaterial(switchMat,child)
+            variantRenderPreview(varSetName)
 
  
                                                
 createVariantFromMaterialSwitches("all","override")
+
+#variantRenderPreview("M_Metallic black")
